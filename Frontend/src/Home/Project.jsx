@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { Bar, Line, Pie } from 'react-chartjs-2';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 import 'chart.js/auto';
 
 const Project = () => {
@@ -14,6 +14,7 @@ const Project = () => {
   const [filterAgency, setFilterAgency] = useState('');
   const [filterDuration, setFilterDuration] = useState('');
   const [filterOutlay, setFilterOutlay] = useState('');
+  const [openMenu, setOpenMenu] = useState(null); // To track which project menu is open
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -52,7 +53,6 @@ const Project = () => {
       code: 'PJT-11223',
       status: 'Overdue',
     },
-    // Add more project details as needed
   ];
 
   // Filter Projects
@@ -65,53 +65,62 @@ const Project = () => {
     (filterOutlay === '' || project.outlay.includes(filterOutlay))
   );
 
-  // Sample chart data
+  const handleMenuToggle = (index) => {
+    if (openMenu === index) {
+      setOpenMenu(null); // Close the currently open menu
+    } else {
+      setOpenMenu(index); // Open the selected menu
+    }
+  };
+
+  // Placeholder chart data
   const barData = {
-    labels: ['Project A', 'Project B', 'Project C'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
     datasets: [
       {
-        label: 'Progress (%)',
-        data: [60, 100, 40],
-        backgroundColor: ['rgba(75,192,192,1)', 'rgba(153,102,255,1)', 'rgba(255,99,132,1)'],
+        label: 'Progress',
+        data: [65, 59, 80, 81, 56],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const burndownData = {
+    labels: ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4'],
+    datasets: [
+      {
+        label: 'Burndown',
+        data: [30, 25, 20, 10],
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        borderColor: 'rgba(153, 102, 255, 1)',
         borderWidth: 1,
       },
     ],
   };
 
   const lineData = {
-    labels: ['January', 'February', 'March', 'April', 'May'],
+    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
     datasets: [
       {
-        label: 'Milestone Completion',
-        data: [0, 20, 40, 60, 80],
-        fill: false,
-        backgroundColor: '#42A5F5',
-        borderColor: '#42A5F5',
-      },
-    ],
-  };
-
-  const burndownData = {
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-    datasets: [
-      {
-        label: 'Tasks Remaining',
-        data: [30, 20, 10, 0],
-        fill: false,
-        backgroundColor: '#FF6384',
-        borderColor: '#FF6384',
+        label: 'Budget Utilization',
+        data: [50, 75, 60, 90],
+        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        borderColor: 'rgba(255, 159, 64, 1)',
+        borderWidth: 1,
       },
     ],
   };
 
   const pieData = {
-    labels: ['Active', 'Completed', 'Overdue'],
+    labels: ['Resource A', 'Resource B', 'Resource C'],
     datasets: [
       {
-        label: '# of Projects',
-        data: [10, 5, 3],
-        backgroundColor: ['rgba(75,192,192,1)', 'rgba(153,102,255,1)', 'rgba(255,99,132,1)'],
-        borderWidth: 1,
+        label: 'Resource Allocation',
+        data: [300, 50, 100],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
       },
     ],
   };
@@ -122,15 +131,18 @@ const Project = () => {
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-72' : 'ml-0'} ${isSidebarOpen ? 'pl-4' : ''}`}>
         <Topbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div className="container mx-auto p-6">
-          <h1 className="text-3xl font-bold mb-6">Project Management Dashboard</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold">Project Management Dashboard</h1>
+            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:scale-105 hover:bg-blue-700 transition">+ Add New Project</button>
+          </div>
 
           {/* Search and Filter Options */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex space-x-4">
-              <button onClick={() => setFilterStatus('Active')} className="bg-blue-500 text-white px-4 py-2 rounded">Active</button>
-              <button onClick={() => setFilterStatus('Completed')} className="bg-green-500 text-white px-4 py-2 rounded">Completed</button>
-              <button onClick={() => setFilterStatus('Overdue')} className="bg-red-500 text-white px-4 py-2 rounded">Overdue</button>
-              <button onClick={() => setFilterStatus('All')} className="bg-gray-500 text-white px-4 py-2 rounded">All</button>
+              <button onClick={() => setFilterStatus('Active')} className="bg-blue-500 text-white hover:scale-105 px-4 py-2 rounded">Active</button>
+              <button onClick={() => setFilterStatus('Completed')} className="bg-green-500 text-white hover:scale-105 px-4 py-2 rounded">Completed</button>
+              <button onClick={() => setFilterStatus('Overdue')} className="bg-red-500 text-white px-4 hover:scale-105 py-2 rounded">Overdue</button>
+              <button onClick={() => setFilterStatus('All')} className="bg-gray-500 text-white px-4 hover:scale-105 py-2 rounded">All</button>
             </div>
             <div className="relative flex items-center">
               <FaSearch className="absolute left-3 top-3 text-gray-500" />
@@ -144,114 +156,96 @@ const Project = () => {
             </div>
           </div>
 
-          {/* Dropdown Filters in One Row */}
+          {/* Dropdown Filters */}
           <div className="flex space-x-4 mb-6">
-            <select
-              className="border rounded px-4 py-2"
-              value={filterInvestigator}
-              onChange={(e) => setFilterInvestigator(e.target.value)}
-            >
+            <select className="border rounded px-4 py-2" value={filterInvestigator} onChange={(e) => setFilterInvestigator(e.target.value)}>
               <option value="">Filter by Investigator</option>
-              {/* Add options dynamically based on your data */}
               <option value="Dr. Smith">Dr. Smith</option>
               <option value="Dr. Johnson">Dr. Johnson</option>
               <option value="Dr. Adams">Dr. Adams</option>
             </select>
-            <select
-              className="border rounded px-4 py-2"
-              value={filterAgency}
-              onChange={(e) => setFilterAgency(e.target.value)}
-            >
+            <select className="border rounded px-4 py-2" value={filterAgency} onChange={(e) => setFilterAgency(e.target.value)}>
               <option value="">Filter by Agency</option>
-              {/* Add options dynamically based on your data */}
               <option value="Agency 1">Agency 1</option>
               <option value="Agency 2">Agency 2</option>
               <option value="Agency 3">Agency 3</option>
             </select>
-            <select
-              className="border rounded px-4 py-2"
-              value={filterDuration}
-              onChange={(e) => setFilterDuration(e.target.value)}
-            >
+            <select className="border rounded px-4 py-2" value={filterDuration} onChange={(e) => setFilterDuration(e.target.value)}>
               <option value="">Filter by Duration</option>
-              {/* Add options dynamically based on your data */}
               <option value="2023">2023</option>
               <option value="2024">2024</option>
             </select>
-            <select
-              className="border rounded px-4 py-2"
-              value={filterOutlay}
-              onChange={(e) => setFilterOutlay(e.target.value)}
-            >
+            <select className="border rounded px-4 py-2" value={filterOutlay} onChange={(e) => setFilterOutlay(e.target.value)}>
               <option value="">Filter by Outlay</option>
-              {/* Add options dynamically based on your data */}
-              <option value="500K USD">500K USD</option>
               <option value="1M USD">1M USD</option>
               <option value="2M USD">2M USD</option>
+              <option value="500K USD">500K USD</option>
             </select>
           </div>
 
-          {/* Centralized View of Projects */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            {filteredProjects.map(project => (
-              <div key={project.code} className="bg-white shadow-md rounded-lg p-4">
-                <h2 className="text-xl font-semibold mb-2">{project.title}</h2>
-                <p className="text-gray-600"><strong>Investigator:</strong> {project.investigator}</p>
-                <p className="text-gray-600"><strong>Agencies:</strong> {project.agencies}</p>
-                <p className="text-gray-600"><strong>Duration:</strong> {project.duration}</p>
-                <p className="text-gray-600"><strong>Outlay:</strong> {project.outlay}</p>
-                <p className="text-gray-600"><strong>Project Code:</strong> {project.code}</p>
-                <p className={`text-${project.status === 'Active' ? '[blue]' : project.status === 'Completed' ? '[green]' : '[red]'}500`}>
-                  {project.status}
-                </p>
-              </div>
-            ))}
-          </div>
+          {/* Projects List */}
+          <div className="bg-white shadow-lg rounded-lg p-6 mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Filtered Projects</h2>
+              <button className="text-blue-600 hover:text-blue-800 font-semibold transition">See All</button>
+            </div>
 
-          {/* Chart Sections - Two Charts Per Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-6 mb=6">
-            {/* Progress Tracking Chart */}
-            {chartVisible ? (
-                <>
-                  <div className="bg-white shadow-md rounded-lg p=6">
-                    <h2 className="text=2xl  font-semibold mb=4">Progress Tracking</h2>
-                    <Bar data={barData} />
-                  </div>
+            {filteredProjects.length > 0 ? (
+              <ul className="divide-y divide-gray-500">
+                {filteredProjects.map((project, index) => (
+                  <li key={index} className="py-10  relative">
+                    <div>
+                      <h3 className="text-xl font-semibold">{project.title}</h3>
+                      <p>Investigator: {project.investigator}</p>
+                      <p>Agencies: {project.agencies}</p>
+                      <p>Duration: {project.duration}</p>
+                      <p>Outlay: {project.outlay}</p>
+                      <p>Project Code: {project.code}</p>
+                      <p>Status: {project.status}</p>
+                    </div>
 
-                  {/* Milestone Tracking Chart */}
-                  <div className="bg-white shadow-md rounded-lg p=6">
-                    <h2 className="text=2xl font-semibold mb=4">Milestone Tracking</h2>
-                    <Line data={lineData} />
-                  </div>
+                    {/* Three Dots Menu */}
+                    <div className="absolute top-4 right-0">
+                      <button onClick={() => handleMenuToggle(index)} className="text-gray-500 hover:text-gray-700">
+                        <FaEllipsisV />
+                      </button>
 
-                  {/* Burn-down Chart */}
-                  <div className="bg-white shadow-md rounded-lg p=6">
-                    <h2 className="text=2xl font-semibold mb=4">Burn-down Chart</h2>
-                    <Line data={burndownData} />
-                  </div>
-
-                  {/* Resource Allocation Chart */}
-                  <div className="bg-white shadow-md rounded-lg p=6">
-                    <h2 className="text=2xl font-semibold mb=4">Resource Allocation</h2>
-                    <Pie data={pieData} />
-                  </div>
-                </>
+                      {openMenu === index && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                          <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Assign Task</button>
+                          <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Edit</button>
+                          <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Manage Access</button>
+                          <button className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Delete</button>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             ) : (
-                <>
-                  {/* Placeholder for loading state */}
-                  {[...Array(4)].map((_, index) => (
-                    <div key={index} className='bg-gray-200 h-[200px] animate-pulse rounded-lg'></div> 
-                  ))}
-                </>
+              <p>No projects found matching the filters.</p>
             )}
           </div>
 
-          {/* Admin Console Section */}
-          <div className="bg-white shadow-md rounded-lg p=6 mb=6">
-            <h2 className="text=2xl font-semibold mb=4">Admin Console</h2>
-            <p>Manage user access and permissions.</p>
+          {/* Charts */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-xl font-bold mb-4 bg-lime-400">Project Progress (%)</h3>
+              <Bar data={barData} className='bg-orange-200'/>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4 bg-lime-400">Burndown Chart</h3>
+              <Line data={burndownData} className='bg-orange-200'/>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4 bg-lime-400">Budget Utilization & Progress</h3>
+              <Line data={lineData} className='bg-orange-200'/>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4 bg-lime-400">Resource Allocation</h3>
+              <Pie data={pieData} className='bg-orange-200'/>
+            </div>
           </div>
-
         </div>
       </div>
     </div>

@@ -1,7 +1,11 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { IoArrowBackSharp } from "react-icons/io5";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   // Data for charts
   const projectStatusData = [
     { name: 'Active Projects', value: 20, color: '#00C49F' },
@@ -16,8 +20,18 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="p-8 bg-gray-100">
+      {/* Back button */}
+      <button 
+        onClick={() => navigate(-1)} 
+        className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
+      >
+        <IoArrowBackSharp className="mr-2 text-2xl" />
+        
+      </button>
+
+      {/* Grid for charts and data */}
+      <div className="grid pt-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         
         {/* Budget Overview */}
         <div className="bg-white shadow-lg p-6 rounded-lg">
@@ -73,7 +87,6 @@ const Dashboard = () => {
             ))}
           </ul>
         </div>
-
       </div>
 
       {/* Search Project */}

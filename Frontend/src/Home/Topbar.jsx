@@ -3,19 +3,18 @@ import { FaSearch, FaBell, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { IoMdClose } from 'react-icons/io';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Topbar = ({ isSidebarOpen, toggleSidebar }) => {
   const navigate = useNavigate(); 
-  const location = useLocation();
 
   const handleDashboardClick = () => {
     navigate('/dashboard'); 
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 flex shadow-md justify-between items-center px-6 py-4 bg-blue-950 text-white">
+    <div className="fixed top-0 left-0 right-0 flex shadow-md justify-between items-center px-6 py-4 bg-blue-950 text-white z-50">
       {/* Sidebar toggle and logo */}
       <div className="flex items-center space-x-4">
         <button onClick={toggleSidebar} className={`text-2xl ${isSidebarOpen ? 'hidden' : 'block'}`}>
@@ -26,8 +25,9 @@ const Topbar = ({ isSidebarOpen, toggleSidebar }) => {
             <IoMdClose />
           </button>
         )}
-        <Link to="/"><img src={logo} alt="Logo" className="h-14 cursor-pointer hover:scale-105" /></Link>
-        
+        <Link to="/">
+          <img src={logo} alt="Logo" className="h-14 cursor-pointer hover:scale-105" />
+        </Link>
       </div>
 
       {/* Search Box */}

@@ -1,67 +1,53 @@
 import React from 'react';
+import { IoMdClose } from 'react-icons/io';
+import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaFileAlt, FaChartPie, FaProjectDiagram, FaQuestionCircle, FaCog, FaSignOutAlt } from 'react-icons/fa';
 
-const Sidebar = () => {
-  return (
-    <div className="h-screen w-64 bg-blue-100 p-4 shadow-lg">
-      <div className="text-center py-4">
-        <img src="/logo.png" alt="Logo" className="mx-auto mb-4 w-12" />
-        <h1 className="text-xl font-bold">TrackEase CMPDI</h1>
-      </div>
+const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
+    const location = useLocation();
 
-      <nav className="mt-8">
-        <ul>
-          <li className="mb-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-              <FaHome size={20} />
-              <span>Home</span>
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-              <FaProjectDiagram size={20} />
-              <span>Project Management</span>
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-              <FaChartPie size={20} />
-              <span>Financials</span>
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-              <FaFileAlt size={20} />
-              <span>Documents</span>
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-              <FaChartPie size={20} />
-              <span>Progress Reports</span>
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-              <FaQuestionCircle size={20} />
-              <span>Help & Support</span>
-            </a>
-          </li>
-        </ul>  
-      </nav>
+    const getLinkClass = (path) => {
+        return location.pathname === path
+            ? 'text-black font-bold bg-blue-100'
+            : 'text-gray-950 hover:text-black hover:bg-gray-100';
+    };
 
-      <div className="mt-auto">
-        <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-blue-500">
-          <FaCog size={20} />
-          <span>Settings</span>
-        </a>
-        <a href="#" className="flex items-center space-x-2 text-gray-600 hover:text-red-500 mt-4">
-          <FaSignOutAlt size={20} />
-          <span>Log out</span>
-        </a>
-      </div>
-    </div>
-  );
+    const menuItems = [
+        { path: '/home', label: 'Home', icon: <FaHome /> },
+        { path: '/project', label: 'Project Management', icon: <FaProjectDiagram /> },
+        { path: '/financials', label: 'Financials', icon: <FaChartPie /> },
+        { path: '/documents', label: 'Documents', icon: <FaFileAlt /> },
+        { path: '/reports', label: 'Progress Reports', icon: <FaChartPie /> },
+        { path: '/help', label: 'Help & Support', icon: <FaQuestionCircle /> },
+        { path: '/settings', label: 'Settings', icon: <FaCog /> },
+        { path: '/signout', label: 'Sign out', icon: <FaSignOutAlt /> }, 
+    ];
+
+    return (
+        <div
+            className={`fixed top-0 left-0 h-full w-64 bg-blue-300 p-5 shadow-lg z-50 transition-transform duration-300 ${
+                isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+        >
+            <button
+                onClick={toggleSidebar}
+                className="absolute top-5 right-5 text-2xl text-gray-950 hover:text-black transition-colors"
+            >
+                <IoMdClose />
+            </button>
+            <ul className="space-y-4 pt-20">
+                {menuItems.map((item) => (
+                    <li key={item.path}>
+                        <Link to={item.path} className={`flex items-center p-3 rounded-lg transition-colors ${getLinkClass(item.path)}`}>
+                            <span className="mr-3 text-xl">{item.icon}</span>
+                            {item.label}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
+
 
 export default Sidebar;
